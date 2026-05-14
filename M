@@ -1,0 +1,72 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: pafranco <pafranco@student.42barcelon      +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/07/02 12:53:07 by pafranco          #+#    #+#              #
+#    Updated: 2025/08/11 17:46:20 by pafranco         ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+NAME		= cub3b
+	
+CC			= c
+FLAGS		= -Wall -Wextra -Werror -g
+RM			= rm -rf
+
+SRCDIR = 	src/
+OBJDIR = 	obj/
+
+SRCS_FILES	=	$(SRC_DIR)/main.c $(SRC_DIR)/init/init_images.c \
+				$(SRC_DIR)/init/init_structes.c $(SRC_DIR)/parsing/create_map.c \
+				$(SRC_DIR)/parsing/parse_arg.c $(SRC_DIR)/parsing/parse_color.c \
+				$(SRC_DIR)/parsing/parse_info.c $(SRC_DIR)/parsing/parse_map_borders.c \
+				$(SRC_DIR)/parsing/parse_textures.c $(SRC_DIR)/parsing/parse_utils.c \
+				$(SRC_DIR)/player/player_dir.c $(SRC_DIR)/player/player_move.c \
+				$(SRC_DIR)/player/player_rotate.c $(SRC_DIR)/utils/error.c \
+				$(SRC_DIR)/utils/exit.c $(SRC_DIR)/utils/free.c \
+				$(SRC_DIR)/utils/color_pixel.c  $(SRC_DIR)/utils/append.c\
+
+NORMAL_FILES=	$(SRC_DIR)/render/render.c $(SRC_DIR)/parsing/get_data.c \
+				$(SRC_DIR)/render/raycasting.c $(SRC_DIR)/render/textures.c \
+				$(SRC_DIR)/init/init_textures.c $(SRC_DIR)/player/player_pos.c \
+				$(SRC_DIR)/player/inputs_key.c $(SRC_DIR)/parsing/parse_map.c \
+
+BONUS_FILES	=	$(SRC_DIR)/bonus/render/render.c $(SRC_DIR)/bonus/parsing/get_data.c \
+				$(SRC_DIR)/bonus/render/raycasting.c $(SRC_DIR)/bonus/render/textures.c \
+				$(SRC_DIR)/bonus/init/init_textures.c $(SRC_DIR)/bonus/player/player_pos.c \
+				$(SRC_DIR)/bonus/doors.c $(SRC_DIR)/bonus/minimap_image.c \
+				$(SRC_DIR)/bonus/minimap.c $(SRC_DIR)/bonus/inputs_key_bonus.c \
+				$(SRC_DIR)/bonus/parsing/parse_map.c \
+
+#DEPS		= $(addprefix $(OBJDIR), $(FILES:=.d))
+
+OBJS_FILES = $(SRCS_FILES:.c=.o)
+OBJS_NORMAL = $(NORMAL_FILES:.c=.o)
+OBJS_BONUS = $(BONUS_FILES:.c=.o)
+
+all: $(NAME)
+
+$(NAME): $(OBJS_FILES) $(OBJS_NORMAL) $(HEADER)
+	@$(CC) $(OBJS_FILES) $(OBJS_NORMAL) -o $(NAME)
+	@printf " - Executable ready.\n"
+
+$(OBJDIR)%.o: $(SRCDIR)%.c $(HEADER) Makefile
+	@mkdir -p $(OBJDIR)
+	@$(CC) $(FLAGS) -c -MMD $< -o $@
+
+clean:
+	@$(RM) $(OBJS_FILES) $(OBJ_NORMAL)
+	@printf " - Object files removed.\n"
+
+fclean: clean
+	@$(RM) $(NAME)
+	@printf " - Executable removed.\n"
+
+re: fclean all
+
+-include $(DEPS)
+
+.PHONY: all clean fclean re
